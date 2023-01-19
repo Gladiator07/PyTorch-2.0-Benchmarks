@@ -122,6 +122,7 @@ if __name__ == "__main__":
     trainer.train()
     train_end_time = time.perf_counter()
     elapsed_time = train_end_time - train_start_time
+
     delete_checkpoints(OUTPUT_DIR)
     trainer.save_model(OUTPUT_DIR)
 
@@ -131,6 +132,7 @@ if __name__ == "__main__":
             model_artifact.add_dir(OUTPUT_DIR)
             wandb.log_artifact(model_artifact)
 
-        wandb.log({"train_time": elapsed_time})
-        wandb.log({"train_time_hr": asHours(elapsed_time)})
+        wandb.log({"train/runtime": elapsed_time})
+        # log time in human readable format
+        wandb.log({"train/runtime_hr": asHours(elapsed_time)})
         wandb.finish()
