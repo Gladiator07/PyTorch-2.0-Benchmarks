@@ -1,0 +1,42 @@
+# data args
+dataset_name: imdb
+max_seq_length: 512
+pad_to_max_length: true
+max_train_samples: 1000
+max_eval_samples: 1000
+
+# model args
+model_name_or_path: bert-base-uncased
+
+# wandb args
+pytorch_version: 1.13
+wandb_enable: true
+name: ${pytorch_version}_${model_name_or_path}
+wandb_project: PyTorch 2.0 Benchmarks
+tags: ["${pytorch_version}", "${model_name_or_path}", "${dataset_name}"]
+save_artifacts: true
+
+# training args
+training_args:
+  output_dir: artifacts 
+  evaluation_strategy: epoch 
+  per_device_train_batch_size: 16 
+  per_device_eval_batch_size: 16 
+  gradient_accumulation_steps: 1 
+  learning_rate: 2e-5 
+  weight_decay: 0.01 
+  num_train_epochs: 3 
+  lr_scheduler_type: cosine 
+  warmup_ratio: 0.2 
+  save_strategy: epoch 
+  save_total_limit: 1 
+  seed: 42 
+  fp16: false 
+  dataloader_num_workers: 6 
+  load_best_model_at_end: true 
+  metric_for_best_model: eval_accuracy 
+  greater_is_better: true 
+  group_by_length: false 
+  report_to: wandb 
+  dataloader_pin_memory: true 
+  gradient_checkpointing: false
