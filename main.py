@@ -2,7 +2,7 @@ import argparse
 import glob
 import os
 import shutil
-
+import time
 import evaluate
 import numpy as np
 import wandb
@@ -24,6 +24,12 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 def delete_checkpoints(dir):
     for file in glob.glob(f"{dir}/checkpoint-*"):
         shutil.rmtree(file, ignore_errors=True)
+
+
+def asHours(seconds: float) -> str:
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    return f"{h:.0f}h:{m:.0f}m:{s:.0f}s"
 
 
 def parse_args():
@@ -102,6 +108,7 @@ if __name__ == "__main__":
     else:
         data_collator = None
 
+    train_start_time = time.perf_counter()
     trainer = Trainer(
         model,
         args=TrainingArguments(**args.training_args),
@@ -113,6 +120,8 @@ if __name__ == "__main__":
     )
 
     trainer.train()
+    train_end_time = time.perf_counter()
+    elapsed_time = train_end_time - train_start_time
     delete_checkpoints(OUTPUT_DIR)
     trainer.save_model(OUTPUT_DIR)
 
@@ -122,4 +131,6 @@ if __name__ == "__main__":
             model_artifact.add_dir(OUTPUT_DIR)
             wandb.log_artifact(model_artifact)
 
+        wandb.log({"train_time": elapsed_time})
+        wandb.log({"train_time_hr": asHours(elapsed_time)})
         wandb.finish()
