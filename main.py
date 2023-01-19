@@ -14,6 +14,7 @@ from transformers import (
     DataCollatorWithPadding,
     Trainer,
     TrainingArguments,
+    set_seed,
     default_data_collator,
 )
 
@@ -38,11 +39,13 @@ if __name__ == "__main__":
 
     args = parse_args()
 
+    set_seed(args.training_args.seed)
     if args.wandb_enable:
         wandb.init(
             name=args.name,
             project=args.wandb_project,
-            tags=args.tags.split(",") if args.tags else None,
+            tags=args.tags,
+            config=OmegaConf.to_container(args, resolve=True, throw_on_missing=True),
         )
 
     OUTPUT_DIR = args.training_args.output_dir = os.path.join(
@@ -82,14 +85,15 @@ if __name__ == "__main__":
 
     train_ds, eval_ds = ds["train"], ds["test"]
 
-    train_ds = train_ds.map(tokenize_func, batched=True)
-    eval_ds = eval_ds.map(tokenize_func, batched=True)
     if args.max_train_samples is not None:
         max_train_samples = min(len(train_ds), args.max_train_samples)
-        train_dataset = train_ds.select(range(max_train_samples))
+        train_ds = train_ds.select(range(max_train_samples))
     if args.max_eval_samples is not None:
         max_eval_samples = min(len(eval_ds), args.max_eval_samples)
-        eval_dataset = eval_ds.select(range(max_eval_samples))
+        eval_ds = eval_ds.select(range(max_eval_samples))
+
+    train_ds = train_ds.map(tokenize_func, batched=True)
+    eval_ds = eval_ds.map(tokenize_func, batched=True)
 
     if args.pad_to_max_length:
         data_collator = default_data_collator
@@ -110,6 +114,7 @@ if __name__ == "__main__":
 
     trainer.train()
     delete_checkpoints(OUTPUT_DIR)
+    trainer.save_model(OUTPUT_DIR)
 
     if args.wandb_enable:
         if args.save_artifacts:
