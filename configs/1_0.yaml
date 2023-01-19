@@ -9,7 +9,7 @@ max_eval_samples: 1000
 model_name_or_path: bert-base-uncased
 
 # wandb args
-pytorch_version: 1.13
+pytorch_version: "1.13"
 wandb_enable: true
 name: ${pytorch_version}_${model_name_or_path}
 wandb_project: PyTorch 2.0 Benchmarks
