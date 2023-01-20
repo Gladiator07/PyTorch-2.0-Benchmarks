@@ -98,8 +98,8 @@ if __name__ == "__main__":
         max_eval_samples = min(len(eval_ds), args.max_eval_samples)
         eval_ds = eval_ds.select(range(max_eval_samples))
 
-    train_ds = train_ds.map(tokenize_func, batched=True, num_proc=2)
-    eval_ds = eval_ds.map(tokenize_func, batched=True, num_proc=2)
+    train_ds = train_ds.map(tokenize_func, batched=True)
+    eval_ds = eval_ds.map(tokenize_func, batched=True)
 
     if args.pad_to_max_length:
         data_collator = default_data_collator
