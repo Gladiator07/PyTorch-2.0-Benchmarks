@@ -17,8 +17,8 @@ python src/train.py \
         
 python src/train.py \
         --config configs/1_0_large.yaml \
-        model_name_or_path="albert-large-v2" \
-        per_device_train_batch_size=8 \
-        per_device_eval_batch_size=8 \
-        learning_rate=1e-5 \
+        model_name_or_path="microsoft/deberta-v2-xlarge" \
+        per_device_train_batch_size=16 \
+        per_device_eval_batch_size=16 \
+        learning_rate=2e-5 \
         save_artifacts=false
