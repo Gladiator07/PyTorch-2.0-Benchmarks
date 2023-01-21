@@ -8,13 +8,6 @@ max_eval_samples: null
 # model args
 model_name_or_path: bert-base-uncased
 
-# wandb args
-pytorch_version: "2.0"
-wandb_enable: true
-name: ${pytorch_version}_${model_name_or_path}
-wandb_project: PyTorch 2.0 Benchmarks
-save_artifacts: true
-
 # training args
 training_args:
   # torch compile
@@ -43,5 +36,11 @@ training_args:
   report_to: wandb 
   dataloader_pin_memory: true 
   gradient_checkpointing: false
-  
+
+# wandb args
+pytorch_version: "2.0"
+wandb_enable: true
+name: ${pytorch_version}_${model_name_or_path}_${training_args.torch_compile_mode}_${training_args.torch_compile_backend}
+wandb_project: PyTorch 2.0 Benchmarks
+save_artifacts: true 
 tags: ["${pytorch_version}", "${model_name_or_path}", "${dataset_name}", "${training_args.torch_compile_mode}", "${training_args.torch_compile_backend}"]
