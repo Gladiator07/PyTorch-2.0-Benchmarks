@@ -75,6 +75,10 @@ if __name__ == "__main__":
         args.model_name_or_path, num_labels=num_labels
     )
 
+    if tokenizer.pad_token is None:
+        tokenizer.add_special_tokens({"pad_token": "[PAD]"})
+    model.resize_token_embeddings(len(tokenizer))
+
     def tokenize_func(example):
         return tokenizer(
             example["text"],

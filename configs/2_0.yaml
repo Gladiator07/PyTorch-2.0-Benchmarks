@@ -13,7 +13,6 @@ pytorch_version: "2.0"
 wandb_enable: true
 name: ${pytorch_version}_${model_name_or_path}
 wandb_project: PyTorch 2.0 Benchmarks
-tags: ["${pytorch_version}", "${model_name_or_path}", "${dataset_name}"]
 save_artifacts: true
 
 # training args
@@ -44,3 +43,5 @@ training_args:
   report_to: wandb 
   dataloader_pin_memory: true 
   gradient_checkpointing: false
+  
+tags: ["${pytorch_version}", "${model_name_or_path}", "${dataset_name}", "${training_args.torch_compile_mode}", "${training_args.torch_compile_backend}"]
