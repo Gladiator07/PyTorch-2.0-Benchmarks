@@ -40,7 +40,7 @@ training_args:
 # wandb args
 pytorch_version: "2.0"
 wandb_enable: true
-name: ${pytorch_version}_${model_name_or_path}_${training_args.torch_compile_mode}_${training_args.torch_compile_backend}
+name: ${pytorch_version}_${model_name_or_path}
 wandb_project: PyTorch 2.0 Benchmarks
 save_artifacts: true 
 tags: ["${pytorch_version}", "${model_name_or_path}", "${dataset_name}", "${training_args.torch_compile_mode}", "${training_args.torch_compile_backend}"]
