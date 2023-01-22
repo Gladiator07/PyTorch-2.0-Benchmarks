@@ -312,7 +312,9 @@ def main():
     # Only show the progress bar once on each machine.
     train_steps = len(train_dataloader) * args.num_epochs
     progress_bar = tqdm(
-        range(train_steps), disable=not accelerator.is_local_main_process
+        range(train_steps),
+        disable=not accelerator.is_local_main_process,
+        desc="Training",
     )
     train_start_time = time.perf_counter()
     for epoch in range(args.num_epochs):
@@ -357,7 +359,13 @@ def main():
 
     # inference
     model.eval()
+    progress_bar = tqdm(
+        len(eval_dataloader),
+        disable=not accelerator.is_local_main_process,
+        desc="Inference",
+    )
     inference_start_time = time.perf_counter()
+
     for step, batch in enumerate(eval_dataloader):
         with torch.no_grad():
             outputs = model(**batch)
@@ -366,10 +374,11 @@ def main():
             (predictions, batch["labels"])
         )
         metric.add_batch(predictions=predictions, references=references)
-
+        progress_bar.update(1)
         if step == 0:
             first_infer_step_time = time.perf_counter() - inference_start_time
-    total_inference_time = time.time() - inference_start_time
+
+    total_inference_time = time.perf_counter() - inference_start_time
     avg_inference_iteration_time = (total_inference_time - first_infer_step_time) / (
         len(eval_dataloader) - 1
     )
