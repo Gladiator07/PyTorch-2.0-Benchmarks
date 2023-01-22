@@ -5,6 +5,7 @@ import logging
 import os
 import time
 from logging import getLogger
+from pprint import pprint
 
 import evaluate
 import torch
@@ -149,7 +150,7 @@ def main():
 
     args = parse_args()
     print(f"===== Configuration =====")
-    print(vars(args))
+    pprint(vars(args))
     set_seed(args.seed)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
