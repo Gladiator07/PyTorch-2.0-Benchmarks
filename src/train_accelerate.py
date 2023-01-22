@@ -174,6 +174,7 @@ def main():
 
     # Load data
     raw_datasets = load_dataset("imdb")
+    del raw_datasets["unsupervised"]
 
     label_list = raw_datasets["train"].features["label"].names
     num_labels = len(label_list)
@@ -310,7 +311,7 @@ def main():
             outputs = model(**batch)
             loss = outputs.loss
             predictions, references = accelerator.gather_for_metrics(
-                (outputs.logits.argmax(dim=-1), batch["labels"])
+                (outputs.logits.argmax(dim=-1), batch["label"])
             )
             metric.add_batch(predictions=predictions, references=references)
             accelerator.backward(loss)
@@ -352,7 +353,7 @@ def main():
             outputs = model(**batch)
         predictions = outputs.logits.argmax(dim=1)
         predictions, references = accelerator.gather_for_metrics(
-            (predictions, batch["labels"])
+            (predictions, batch["label"])
         )
         metric.add_batch(predictions=predictions, references=references)
 
