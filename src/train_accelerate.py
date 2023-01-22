@@ -134,7 +134,7 @@ def parse_args():
     parser.add_argument(
         "--wandb_project",
         type=str,
-        default="PyTorch 2.0 Benchmarks",
+        default="PyTorch 2.0 Benchmarks - HF Accelerate",
         help="Weights & Biases project name",
     )
     parser.add_argument("--run_name", type=str, default="baseline", help="W&B run name")
