@@ -338,7 +338,7 @@ def main():
                 accelerator.log({"train/loss": loss.item()})
 
         train_accuracy = metric.compute()["accuracy"]
-        accelerator.log({"train/accuracy", train_accuracy})
+        accelerator.log({"train/accuracy": train_accuracy})
         accelerator.print(f"Training Accuracy at epoch {epoch}: {train_accuracy:.3f}")
 
     total_training_time = time.perf_counter() - train_start_time
