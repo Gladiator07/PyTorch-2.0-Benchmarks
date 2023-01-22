@@ -3,8 +3,10 @@ import glob
 import os
 import shutil
 import time
+
 import evaluate
 import numpy as np
+import torch
 import wandb
 from datasets import load_dataset
 from omegaconf import OmegaConf
@@ -14,11 +16,12 @@ from transformers import (
     DataCollatorWithPadding,
     Trainer,
     TrainingArguments,
-    set_seed,
     default_data_collator,
+    set_seed,
 )
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+torch.backends.cuda.matmul.allow_tf32 = True  # use tensor cores
 
 
 def delete_checkpoints(dir):
@@ -107,7 +110,7 @@ if __name__ == "__main__":
 
     if args.pad_to_max_length:
         data_collator = default_data_collator
-    elif args.fp16:
+    elif args.training_args.fp16:
         data_collator = DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8)
     else:
         data_collator = None
