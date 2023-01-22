@@ -197,7 +197,8 @@ def main():
 
     # enable gradient checkpointing if passed
     if args.gradient_checkpointing:
-        model = model.gradient_checkpointing_enable()
+        logger.info("Enabling gradient checkpointing")
+        model.gradient_checkpointing_enable()
 
     # compile model
     if args.torch_compile:
