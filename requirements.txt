@@ -4,3 +4,4 @@ evaluate
 wandb
 omegaconf
 sentencepiece
+git+https://github.com/huggingface/accelerate@main
