@@ -344,7 +344,8 @@ def main():
     inference_start_time = time.perf_counter()
     for step, batch in enumerate(eval_dataloader):
         with torch.no_grad():
-            outputs = model(**batch)
+            with autocast(enabled=args.fp16):
+                outputs = model(**batch)
         predictions = outputs.logits.argmax(dim=-1)
         metric.add_batch(predictions=predictions, references=batch["labels"])
         progress_bar.update(1)
