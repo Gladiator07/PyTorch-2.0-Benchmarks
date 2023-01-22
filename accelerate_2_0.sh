@@ -8,7 +8,8 @@ accelerate launch src/train_accelerate.py \
     --torch_compile \
     --torch_compile_mode "default" \
     --torch_compile_backend "inductor" \
-    --run_name "2.0_fp32"
+    --run_name "2.0_fp32" \
+    --debug
 
 # 2.0 + fp16
 accelerate launch src/train_accelerate.py \
@@ -20,7 +21,8 @@ accelerate launch src/train_accelerate.py \
     --torch_compile \
     --torch_compile_mode "default" \
     --torch_compile_backend "inductor" \
-    --run_name "2.0_fp16"
+    --run_name "2.0_fp16" \
+    --debug
 
 # 2.0 + fp16 + gradient_checkpointing
 accelerate launch src/train_accelerate.py \
@@ -33,7 +35,8 @@ accelerate launch src/train_accelerate.py \
     --torch_compile \
     --torch_compile_mode "default" \
     --torch_compile_backend "inductor" \
-    --run_name "2.0_gradckpt"
+    --run_name "2.0_gradckpt" \
+    --debug
 
 # 2.0 + fp16 + dynamic_padding
 accelerate launch src/train_accelerate.py \
@@ -47,4 +50,5 @@ accelerate launch src/train_accelerate.py \
     --torch_compile_mode "default" \
     --torch_compile_backend "inductor" \
     --torch_compile_dynamic \
-    --run_name "2.0_dynamic_padding"
+    --run_name "2.0_dynamic_padding" \
+    --debug
