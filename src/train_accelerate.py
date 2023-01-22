@@ -83,7 +83,11 @@ def parse_args():
     )
     parser.add_argument("--seed", type=int, default=42, help="random seed")
     parser.add_argument(
-        "--mixed_precision", type=str, default="no", help="`no` or `fp16`"
+        "--mixed_precision",
+        type=str,
+        default="no",
+        choices=["no", "fp16"],
+        help="`no` or `fp16`",
     )
 
     # torch compile args
@@ -115,7 +119,11 @@ def parse_args():
         ],
         help="torch compile backend aka dynamo backend",
     )
-
+    parser.add_argument(
+        "--torch_compile_dynamic",
+        action="store_true",
+        help="whether to enable the code path for Dynamic Shapes",
+    )
     # wandb args
     parser.add_argument(
         "--wandb_enable",
@@ -176,6 +184,19 @@ def main():
         args.model_name_or_path, num_labels=num_labels
     )
 
+    # compile model
+    if args.torch_compile:
+        logger.info("=== Compiling model ===")
+        logger.info(f"mode: {args.torch_compile_mode}")
+        logger.info(f"backend: {args.torch_compile_backend}")
+        logger.info(f"dynamic: {args.torch_compile_dynamic}")
+
+        model = torch.compile(
+            model,
+            mode=args.torch_compile_mode,
+            dynamic=args.torch_compile_dynamic,
+            backend=args.torch_compile_backend,
+        )
     # Preprocessing the datasets
     # if dynamic padding is true, pad the inputs later
     padding = False if args.dynamic_padding else "max_length"
@@ -202,10 +223,15 @@ def main():
 
     # DataLoaders creation:
     if not args.dynamic_padding:
+        logger.info("Using default data collator")
         data_collator = default_data_collator
     elif args.dynamic_padding and args.mixed_precision == "fp16":
+        logger.info(
+            "Using DataCollatorWithPadding and pad_to_multiple_of=8 (dynamic padding enabled + fp16)"
+        )
         data_collator = DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8)
     else:
+        logger.info("Using DataCollatorWithPadding (dynamic padding enabled)")
         data_collator = DataCollatorWithPadding(tokenizer)
 
     train_dataloader = DataLoader(
@@ -227,9 +253,29 @@ def main():
     )
 
     # Optimizer
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
+    # Split weights in two groups, one with weight decay and the other not.
+    no_decay = ["bias", "LayerNorm.weight"]
+    optimizer_grouped_parameters = [
+        {
+            "params": [
+                p
+                for n, p in model.named_parameters()
+                if not any(nd in n for nd in no_decay)
+            ],
+            "weight_decay": 0.01,
+        },
+        {
+            "params": [
+                p
+                for n, p in model.named_parameters()
+                if any(nd in n for nd in no_decay)
+            ],
+            "weight_decay": 0.0,
+        },
+    ]
+    optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=args.learning_rate)
 
-    # Scheduler.
+    # Scheduler
     num_training_steps = len(train_dataloader) * args.num_epochs
     lr_scheduler = get_scheduler(
         name="cosine",
