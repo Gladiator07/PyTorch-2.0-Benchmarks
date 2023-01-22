@@ -147,7 +147,7 @@ def main():
     set_seed(args.seed)
 
     accelerator = Accelerator(
-        dynamo_backend=args.torch_compile_backend,
+        dynamo_backend=args.torch_compile_backend if args.torch_compile else None,
         mixed_precision=args.mixed_precision,
         log_with="wandb" if args.wandb_enable else None,
     )
