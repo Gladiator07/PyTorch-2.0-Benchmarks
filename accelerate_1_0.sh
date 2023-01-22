@@ -19,8 +19,8 @@ accelerate launch src/train_accelerate.py \
 # 1.13 + fp16 + gradient_checkpointing
 accelerate launch src/train_accelerate.py \
     --model_name_or_path "bert-large-uncased" \
-    --batch_size 48 \
-    --learning_rate 3e-5 \
+    --batch_size 64 \
+    --learning_rate 4e-5 \
     --gradient_checkpointing \
     --mixed_precision "fp16" \
     --wandb_enable \
