@@ -141,7 +141,7 @@ def parse_args():
     parser.add_argument(
         "--debug",
         action="store_true",
-        help="Enable debug mode (train and infer on 2000 samples)",
+        help="Enable debug mode (train and infer on 1000 samples)",
     )
     args = parser.parse_args()
     return args
@@ -186,9 +186,9 @@ def main():
     num_labels = len(label_list)
 
     if args.debug:
-        logger.warning("Debug mode enabled: training and inference on 2000 samples")
+        logger.warning("Debug mode enabled: training and inference on 1000 samples")
         for key in raw_datasets.keys():
-            raw_datasets[key] = raw_datasets[key].select(range(2000))
+            raw_datasets[key] = raw_datasets[key].select(range(1000))
     # Load pretrained model and tokenizer
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
     model = AutoModelForSequenceClassification.from_pretrained(
@@ -335,9 +335,9 @@ def main():
                     first_train_step_time = time.perf_counter() - train_start_time
                 accelerator.log({"train/loss": loss.item()})
 
-        train_accuracy = metric.compute()
+        train_accuracy = metric.compute()["accuracy"]
         accelerator.log({"train/accuracy", train_accuracy})
-        accelerator.print(f"Training Accuracy at epoch {epoch}: {train_accuracy}")
+        accelerator.print(f"Training Accuracy at epoch {epoch}: {train_accuracy:.3f}")
 
     total_training_time = time.perf_counter() - train_start_time
     avg_train_iteration_time = (total_training_time - first_train_step_time) / (
@@ -376,8 +376,8 @@ def main():
     inference_iterations_per_sec = 1 / avg_inference_iteration_time
     inference_samples_per_sec = inference_iterations_per_sec * args.batch_size
 
-    test_accuracy = metric.compute()
-    accelerator.print(f"Test Accuracy: {test_accuracy}")
+    test_accuracy = metric.compute()["accuracy"]
+    accelerator.print(f"Test Accuracy: {test_accuracy:.3f}")
     accelerator.log({"test/accuracy": test_accuracy})
 
     accelerator.print("Inference finished.")
