@@ -137,6 +137,11 @@ def parse_args():
         help="Weights & Biases project name",
     )
     parser.add_argument("--run_name", type=str, default="baseline", help="W&B run name")
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug mode (train and infer on 2000 samples)",
+    )
     args = parser.parse_args()
     return args
 
@@ -179,6 +184,10 @@ def main():
     label_list = raw_datasets["train"].features["label"].names
     num_labels = len(label_list)
 
+    if args.debug:
+        logger.warning("Debug mode enabled: training and inference on 2000 samples")
+        for key in raw_datasets.keys():
+            raw_datasets[key] = raw_datasets[key].select(range(2000))
     # Load pretrained model and tokenizer
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
     model = AutoModelForSequenceClassification.from_pretrained(
