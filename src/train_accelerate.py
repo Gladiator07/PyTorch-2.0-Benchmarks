@@ -195,6 +195,10 @@ def main():
         args.model_name_or_path, num_labels=num_labels
     )
 
+    # enable gradient checkpointing if passed
+    if args.gradient_checkpointing:
+        model = model.gradient_checkpointing_enable()
+
     # compile model
     if args.torch_compile:
         logger.info("=== Compiling model ===")
