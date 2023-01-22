@@ -345,6 +345,8 @@ def main():
     for step, batch in enumerate(eval_dataloader):
         with torch.no_grad():
             with autocast(enabled=args.fp16):
+                for k, v in batch.items():
+                    batch[k] = v.to(device)
                 outputs = model(**batch)
         predictions = outputs.logits.argmax(dim=-1)
         metric.add_batch(predictions=predictions, references=batch["labels"])
