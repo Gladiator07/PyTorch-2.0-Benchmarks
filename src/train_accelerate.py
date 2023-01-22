@@ -321,7 +321,7 @@ def main():
             outputs = model(**batch)
             loss = outputs.loss
             predictions, references = accelerator.gather_for_metrics(
-                (outputs.logits.argmax(dim=-1), batch["label"])
+                (outputs.logits.argmax(dim=-1), batch["labels"])
             )
             metric.add_batch(predictions=predictions, references=references)
             accelerator.backward(loss)
@@ -363,7 +363,7 @@ def main():
             outputs = model(**batch)
         predictions = outputs.logits.argmax(dim=1)
         predictions, references = accelerator.gather_for_metrics(
-            (predictions, batch["label"])
+            (predictions, batch["labels"])
         )
         metric.add_batch(predictions=predictions, references=references)
 
