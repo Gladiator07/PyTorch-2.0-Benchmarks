@@ -339,7 +339,7 @@ def main():
 
         train_accuracy = metric.compute()["accuracy"]
         accelerator.log({"train/accuracy": train_accuracy})
-        accelerator.print(f"Training Accuracy at epoch {epoch}: {train_accuracy:.3f}")
+        # accelerator.print(f"Training Accuracy at epoch {epoch}: {train_accuracy:.3f}")
 
     total_training_time = time.perf_counter() - train_start_time
     avg_train_iteration_time = (total_training_time - first_train_step_time) / (
@@ -360,7 +360,8 @@ def main():
     # inference
     model.eval()
     progress_bar = tqdm(
-        len(eval_dataloader),
+        eval_dataloader,
+        total=len(eval_dataloader),
         disable=not accelerator.is_local_main_process,
         desc="Inference",
     )
