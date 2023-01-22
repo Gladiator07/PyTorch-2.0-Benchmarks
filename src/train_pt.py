@@ -148,7 +148,10 @@ def parse_args():
 def main():
 
     args = parse_args()
+    print(f"===== Configuration =====")
+    print(vars(args))
     set_seed(args.seed)
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if args.wandb_enable:
         wandb.init(
