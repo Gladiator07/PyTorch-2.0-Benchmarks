@@ -23,8 +23,11 @@ from transformers import (
 )
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "true"
+
 torch.backends.cuda.matmul.allow_tf32 = True  # allow tf32 on matmul
 torch.backends.cudnn.allow_tf32 = True  # allow tf32 on cudnn
+
 logger = getLogger(__name__)
 
 
