@@ -211,7 +211,7 @@ def main():
     if not args.dynamic_padding:
         logger.info("Using default data collator")
         data_collator = default_data_collator
-    elif args.dynamic_padding and args.fp16 == "fp16":
+    elif args.dynamic_padding and args.fp16:
         logger.info(
             "Using DataCollatorWithPadding and pad_to_multiple_of=8 (dynamic padding enabled + fp16)"
         )
