@@ -148,7 +148,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if args.wandb_enable:
         wandb.init(
-            project_name=args.wandb_project,
+            project=args.wandb_project,
             name=args.run_name,
             config=vars(args),
         )
