@@ -153,7 +153,7 @@ def main():
     set_seed(args.seed)
 
     accelerator = Accelerator(
-        # dynamo_backend=args.torch_compile_backend if args.torch_compile else None,
+        dynamo_backend=args.torch_compile_backend if args.torch_compile else None,
         mixed_precision=args.mixed_precision,
         log_with="wandb" if args.wandb_enable else None,
     )
@@ -299,18 +299,18 @@ def main():
         model.gradient_checkpointing_enable()
 
     # compile model
-    if args.torch_compile:
-        logger.info("=== Compiling model ===")
-        logger.info(f"mode: {args.torch_compile_mode}")
-        logger.info(f"backend: {args.torch_compile_backend}")
-        logger.info(f"dynamic: {args.torch_compile_dynamic}")
+    # if args.torch_compile:
+    #     logger.info("=== Compiling model ===")
+    #     logger.info(f"mode: {args.torch_compile_mode}")
+    #     logger.info(f"backend: {args.torch_compile_backend}")
+    #     logger.info(f"dynamic: {args.torch_compile_dynamic}")
 
-        model = torch.compile(
-            model,
-            mode=args.torch_compile_mode,
-            dynamic=args.torch_compile_dynamic,
-            backend=args.torch_compile_backend,
-        )
+    #     model = torch.compile(
+    #         model,
+    #         mode=args.torch_compile_mode,
+    #         dynamic=args.torch_compile_dynamic,
+    #         backend=args.torch_compile_backend,
+    #     )
 
     # Get the metric function
     metric = evaluate.load("accuracy")
