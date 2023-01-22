@@ -97,7 +97,7 @@ def parse_args():
         "--torch_compile_mode",
         type=str,
         default="default",
-        choices=["default", "reduce-overhead", "max-autotone"],
+        choices=["default", "reduce-overhead", "max-autotune"],
         help="mode to use for torch compile",
     )
     parser.add_argument(
