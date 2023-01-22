@@ -206,7 +206,7 @@ def main():
             example["text"],
             add_special_tokens=True,
             truncation=True,
-            max_length=args.max_seq_length,
+            max_length=args.max_length,
             padding=padding,
         )
 
