@@ -24,7 +24,8 @@ from transformers import (
     set_seed,
 )
 
-torch.backends.cuda.matmul.allow_tf32 = True
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+torch.backends.cuda.matmul.allow_tf32 = True  # use tensor cores
 logger = get_logger(__name__)
 
 
@@ -224,7 +225,7 @@ def main():
         processed_datasets = raw_datasets.map(
             tokenize_func,
             batched=True,
-            remove_columns=raw_datasets["train"].column_names,
+            remove_columns=["text"],
             desc="Running tokenizer on dataset",
         )
 
