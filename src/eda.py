@@ -25,7 +25,9 @@ eval_df = eval_ds.to_pandas()
 train_table = wandb.Table(dataframe=train_df)
 eval_table = wandb.Table(dataframe=eval_df)
 
-wandb.init(project="PyTorch 2.0 Benchmarks", name="data-exploration", job_type="upload")
+wandb.init(
+    project="PyTorch 2.0 Benchmarks v2", name="data-exploration", job_type="upload"
+)
 train_artifact = wandb.Artifact(name="train_imdb", type="dataset")
 train_artifact.add(train_table, "train_table")
 
@@ -36,7 +38,7 @@ wandb.log_artifact(eval_artifact)
 
 wandb.log(
     {
-        "train hist": wandb.plot.histogram(
+        "train_hist": wandb.plot.histogram(
             train_table, "seq_length", title="Train Sequence Length Histogram"
         )
     }
