@@ -24,6 +24,12 @@ train_df = train_ds.to_pandas()
 eval_df = eval_ds.to_pandas()
 train_table = wandb.Table(dataframe=train_df)
 eval_table = wandb.Table(dataframe=eval_df)
+train_table.add_column(
+    name="html_text", data=[wandb.Html(x) for x in train_df["text"].to_numpy()]
+)
+eval_table.add_column(
+    name="html_text", data=[wandb.Html(x) for x in eval_df["text"].to_numpy()]
+)
 
 wandb.init(
     project="PyTorch 2.0 Benchmarks v2", name="data-exploration", job_type="upload"
